@@ -1,0 +1,27 @@
+name: Run hltvMatchFetcher.ts every hour
+
+on:
+  schedule:
+    - cron:  '0 * * * *'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Compile TypeScript
+      run: npx tsc --project tsconfig.json
+
+    - name: Run hltvMatchFetcher.js script
+      run: node lib/hltvMatchFetcher.js
