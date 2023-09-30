@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '../.env' });
 import HLTV from 'hltv';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { BlobServiceClient } from '@azure/storage-blob';
 
 // Load the cache
