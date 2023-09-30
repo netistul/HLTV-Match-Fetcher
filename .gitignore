@@ -1,2 +1,11 @@
-node_modules
-lib
+# Ignore node_modules directory
+node_modules/
+
+# Ignore specific automatically generated files in lib folder
+lib/*.d.ts
+lib/*.js
+lib/matches.json
+lib/teamLogoCache.json
+
+# Ignore environment files
+.env
