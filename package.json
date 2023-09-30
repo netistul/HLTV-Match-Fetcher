@@ -10,9 +10,8 @@
     "test": "jest --runInBand",
     "test:approve": "jest --runInBand --updateSnapshot",
     "pretty": "prettier --write \"**/*.ts\"",
-    "fetch-matches": "hltvMatchFetcher.ts" 
+    "fetch-matches": "hltvMatchFetcher.ts"
   },
-  
   "repository": "git+https://github.com/gigobyte/HLTV.git",
   "keywords": [
     "hltv",
@@ -61,6 +60,7 @@
   },
   "dependencies": {
     "@azure/storage-blob": "^12.16.0",
+    "axios": "^1.5.1",
     "cheerio": "1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "got-scraping": "3.2.15",
