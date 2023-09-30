@@ -2,7 +2,7 @@ name: Run hltvMatchFetcher.ts every hour
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Run every hour
+  - cron: '0 * * * *'  # Run every hour
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       run: npm install
 
     - name: Compile TypeScript
-      run: tsc
+      run: tsc hltvMatchFetcher.ts --outDir ./lib
 
     - name: Run script
       run: node ./lib/hltvMatchFetcher.js  # Adjust this path based on where the JS file gets generated
