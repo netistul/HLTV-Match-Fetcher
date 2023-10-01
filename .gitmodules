@@ -1,0 +1,3 @@
+[submodule "ChromeExtension"]
+	path = ChromeExtension
+	url = https://github.com/netistul/HLTV-Chrome-Extension.git
