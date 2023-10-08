@@ -32,12 +32,16 @@ interface MatchResult {
   matchLink: string;
 }
 
-async function fetchTeamLogo(teamId: number): Promise<string> {
+let cachedTeamIds: number[] = [];
+
+async function fetchTeamLogo(teamId: number): Promise<{ logoUrl: string, fromCache: boolean }> {
   // Check the cache first
   if (teamLogoCache.hasOwnProperty(teamId)) {
-    console.log(`Using cached logo for team ${teamId}`);
-    return teamLogoCache[teamId];
+    cachedTeamIds.push(teamId);
+    return { logoUrl: teamLogoCache[teamId], fromCache: true };
   }
+
+  console.log(`Fetching CS logo for team ${teamId}`);
 
   try {
     const teamInfo = await HLTV.getTeam({id: teamId});
@@ -54,11 +58,11 @@ async function fetchTeamLogo(teamId: number): Promise<string> {
     teamLogoCache[teamId] = logoUrl;
     fs.writeFileSync(cacheFilePath, JSON.stringify(teamLogoCache, null, 2));
 
-    return logoUrl;
+    return { logoUrl, fromCache: false };
 
   } catch (error) {
     console.error(`Failed to fetch logo for team ${teamId}: ${error}`);
-    return 'Logo not available';
+    return { logoUrl: 'Logo not available', fromCache: false };
   }
 }
 
@@ -98,11 +102,20 @@ async function fetchUpcomingMatches() {
         if (!matchDate || (matchDate >= now && matchDate <= nextDay)) {
           const date = match.date ? new Date(match.date).toISOString() : 'Date not specified';
           const team1Name = match.team1 ? match.team1.name : 'Team1 not specified';
-          const team1Logo = match.team1 && match.team1.id !== undefined ? await fetchTeamLogo(match.team1.id) : 'Logo not available';
-          await delay(500);  // Rate throttle after fetching team1 logo
+          
+          // Check if team1 and team1.id are defined before calling fetchTeamLogo
+          const team1LogoResult = match.team1 && match.team1.id !== undefined ? await fetchTeamLogo(match.team1.id) : { logoUrl: 'Logo not available', fromCache: true };
+          if (!team1LogoResult.fromCache) {
+            await delay(500);  // Rate throttle after fetching team1 logo
+          }
+          
           const team2Name = match.team2 ? match.team2.name : 'Team2 not specified';
-          const team2Logo = match.team2 && match.team2.id !== undefined ? await fetchTeamLogo(match.team2.id) : 'Logo not available';
-          await delay(500);  // Rate throttle after fetching team2 logo
+          
+          // Check if team2 and team2.id are defined before calling fetchTeamLogo
+          const team2LogoResult = match.team2 && match.team2.id !== undefined ? await fetchTeamLogo(match.team2.id) : { logoUrl: 'Logo not available', fromCache: true };
+          if (!team2LogoResult.fromCache) {
+            await delay(500);  // Rate throttle after fetching team2 logo
+          }
 
           let hoursUntilMatch = 'N/A';
           if (matchDate) {
@@ -117,9 +130,9 @@ async function fetchUpcomingMatches() {
             matchId: match.id,
             date,
             team1: team1Name,
-            team1Logo,
+            team1Logo: team1LogoResult.logoUrl,
             team2: team2Name,
-            team2Logo,
+            team2Logo: team2LogoResult.logoUrl,
             hoursUntilMatch,
             event: eventName,
             matchLink  // New field
@@ -129,13 +142,16 @@ async function fetchUpcomingMatches() {
         console.error(`An error occurred while processing match with ID ${match.id}: ${error}`);
       }
     }
+    // Log the cached team IDs at the end
+    if (cachedTeamIds.length > 0) {
+      console.log(`Used cached CS logos for team IDs: ${cachedTeamIds.join(', ')}`);
+    }
 
     fs.writeFileSync('matches.json', JSON.stringify(results, null, 2));
   } catch (error) {
     console.error(`An error occurred while fetching upcoming matches: ${error}`);
   }
 }
-
 
 
 // Function to upload the JSON file to Azure Blob Storage
