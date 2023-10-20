@@ -73,20 +73,19 @@ async function delay(milliseconds: number) {
 }
 
 
-// Your fetchUpcomingMatches function with rate throttling
 async function fetchUpcomingMatches() {
   const results: MatchResult[] = [];
   const now = new Date();
-  const nextDay = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+  const nextDay = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
   try {
     const matches = await HLTV.getMatches();
-    await delay(500);  // Rate throttle after fetching matches
+    await delay(500);
 
     for (const match of matches) {
       try {
         const matchDetails = await HLTV.getMatch({ id: match.id });
-        await delay(500);  // Rate throttle after fetching each match details
+        await delay(500);
 
         const eventName = matchDetails.event ? matchDetails.event.name : "Unknown Event";
         const matchDate = match.date ? new Date(match.date) : null;
@@ -106,7 +105,7 @@ async function fetchUpcomingMatches() {
           // Check if team1 and team1.id are defined before calling fetchTeamLogo
           const team1LogoResult = match.team1 && match.team1.id !== undefined ? await fetchTeamLogo(match.team1.id) : { logoUrl: 'Logo not available', fromCache: true };
           if (!team1LogoResult.fromCache) {
-            await delay(500);  // Rate throttle after fetching team1 logo
+            await delay(500);
           }
           
           const team2Name = match.team2 ? match.team2.name : 'Team2 not specified';
@@ -114,7 +113,7 @@ async function fetchUpcomingMatches() {
           // Check if team2 and team2.id are defined before calling fetchTeamLogo
           const team2LogoResult = match.team2 && match.team2.id !== undefined ? await fetchTeamLogo(match.team2.id) : { logoUrl: 'Logo not available', fromCache: true };
           if (!team2LogoResult.fromCache) {
-            await delay(500);  // Rate throttle after fetching team2 logo
+            await delay(500);
           }
 
           let hoursUntilMatch = 'N/A';
@@ -135,7 +134,7 @@ async function fetchUpcomingMatches() {
             team2Logo: team2LogoResult.logoUrl,
             hoursUntilMatch,
             event: eventName,
-            matchLink  // New field
+            matchLink
           });
         }
       } catch (error) {
