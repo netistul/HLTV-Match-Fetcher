@@ -7,15 +7,23 @@ The frontend for this project is a Chrome extension that reads the match data fr
 To use this script, follow these steps:
 
 1. **Clone the Repository**:
-git clone https://github.com/netistul/HLTV-Match-Fetcher.git
+    ```bash
+    git clone https://github.com/netistul/HLTV-Match-Fetcher.git
+    ```
 2. **Install Dependencies**:
-npm install
+    ```bash
+    npm install
+    ```
 3. **Transpile TypeScript to JavaScript**:
-tsc
+    ```bash
+    tsc
+    ```
 4. **Run the Script**:
-node dist/hltvMatchFetcher.js
+    ```bash
+    node dist/hltvMatchFetcher.js
+    ```
 
-This will execute `hltvMatchFetcher.ts` after it's been transpiled to JavaScript. The script fetches upcoming matches from HLTV, analyzes various match details like teams, logos, and event names, and then stores this information in a JSON file. It also uploads this JSON file to Azure Blob Storage for further use or analysis.
+This will execute `hltvMatchFetcher.ts` after it's been transpiled to JavaScript. The script fetches upcoming CS:GO matches from HLTV, retrieves and caches team logos, calculates the time until each match, and saves the compiled data as a JSON file. It then uploads this JSON file to Azure Blob Storage for further usage.
 
 ---
 
