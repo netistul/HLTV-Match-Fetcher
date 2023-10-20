@@ -173,7 +173,7 @@ async function uploadJsonToBlob() {
   const data = fs.readFileSync('matches.json');
   
   await blockBlobClient.upload(data, data.length);
-  console.log(`Uploaded ${blobName} successfully!`);
+   console.log(`\u{1F916}Uploaded ${blobName} successfully!`);
 }
 
 // Fetch matches and then upload the JSON to Azure Blob Storage
