@@ -20,7 +20,7 @@ To use this script, follow these steps:
     ```
 4. **Run the Script**:
     ```bash
-    node dist/hltvMatchFetcher.js
+    node lib/hltvMatchFetcher.js
     ```
 
 This will execute `hltvMatchFetcher.ts` after it's been transpiled to JavaScript. The script fetches upcoming CS:GO matches from HLTV, retrieves and caches team logos, calculates the time until each match, and saves the compiled data as a JSON file. It then uploads this JSON file to Azure Blob Storage for further usage.
